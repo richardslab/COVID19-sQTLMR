@@ -10,6 +10,17 @@ library(stringr)
 #sQTL
 sQTL_Lung <- fread("/home/richards/tomoko.nakanishi/scratch/DATA/sQTL/GTEx_Analysis_v8_sQTL_independent/Lung.v8.independent_sqtls.txt.gz")
 
+tmp <- sQTL_Lung %>% select(phenotype_id)
+tmp <- unique(tmp)
+tmp <- tmp %>% mutate(pos = paste0(str_split(phenotype_id, pattern=":", simplify = T)[,1],":",
+                                   str_split(phenotype_id, pattern=":", simplify = T)[,2],":",
+                                   str_split(phenotype_id, pattern=":", simplify = T)[,3]),
+                      cluster = str_split(phenotype_id, pattern=":", simplify = T)[,4],
+                      gene = str_split(phenotype_id, pattern=":", simplify = T)[,5])
+
+tmp <- tmp %>% select(pos, cluster, gene)
+saveRDS(tmp, file="Lung_cluster_intron_gene_map.rds")                  
+                      
 # sQTL_Lung_EUR_chr1 <- fread("/home/richards/tomoko.nakanishi/scratch/DATA/sQTL/summary/Lung.v8.EUR.sqtl_allpairs.chr1.tsv.gz")
 # sQTL_Lung_EUR_chr1 <- sQTL_Lung_EUR_chr1 %>% filter(variant_id %in% sQTL_Lung$variant_id)
 # sQTL_Lung_EUR_chr1 <- sQTL_Lung_EUR_chr1 %>% mutate(phenotype_id = paste0(str_split(phenotype_id, pattern="\\:", simplify = T)[,1],":",
@@ -391,9 +402,27 @@ sQTL_Lung <- sQTL_Lung %>% mutate(phenotype_id = paste0(str_split(phenotype_id, 
 exp_sQTL_Lung_EUR <- exp_sQTL_Lung_EUR %>% filter(!(chr.exposure == "chr6" & pos.exposure > 28510120 & pos.exposure < 33480577))
 
 # saveRDS(exp_sQTL_Lung_EUR, file="exposure_sQTL_Lung_EUR.rds")
+# exp_sQTL_Lung_EUR <- readRDS(file="exposure_sQTL_Lung_EUR.rds")
+# 
+# tmp <- readRDS(file="Lung_cluster_intron_gene_map.rds")  
+# tmp <- tmp %>% mutate(exposure = paste0(pos,":",gene),
+#                       exposure1 = paste0(pos,":",cluster,":",gene)) %>% select(exposure, exposure1)
+# exp_sQTL_Lung_EUR <- exp_sQTL_Lung_EUR %>% inner_join(tmp, by="exposure")
+# exp_sQTL_Lung_EUR <- exp_sQTL_Lung_EUR %>% mutate(exposure = exposure1)
 
+saveRDS(exp_sQTL_Lung_EUR, file="exposure_sQTL_Lung_EUR.rds")
 
 sQTL_WBC <- fread("/home/richards/tomoko.nakanishi/scratch/DATA/sQTL/GTEx_Analysis_v8_sQTL_independent/Whole_Blood.v8.independent_sqtls.txt.gz")
+
+tmp <- sQTL_WBC %>% select(phenotype_id)
+tmp <- unique(tmp)
+tmp <- tmp %>% mutate(pos = paste0(str_split(phenotype_id, pattern=":", simplify = T)[,1],":",
+                                   str_split(phenotype_id, pattern=":", simplify = T)[,2],":",
+                                   str_split(phenotype_id, pattern=":", simplify = T)[,3]),
+                      cluster = str_split(phenotype_id, pattern=":", simplify = T)[,4],
+                      gene = str_split(phenotype_id, pattern=":", simplify = T)[,5])
+tmp <- tmp %>% select(pos, cluster, gene)
+saveRDS(tmp, file="Whole_Blood_cluster_intron_gene_map.rds")    
 
 # sQTL_WBC_EUR_chr1 <- fread("/home/richards/tomoko.nakanishi/scratch/DATA/sQTL/summary/Whole_Blood.v8.EUR.sqtl_allpairs.chr1.tsv.gz")
 # sQTL_WBC_EUR_chr1 <- sQTL_WBC_EUR_chr1 %>% filter(variant_id %in% sQTL_WBC$variant_id)
@@ -778,4 +807,14 @@ exp_sQTL_WBC_EUR <- format_data(sQTL_WBC_EUR, type="exposure",
 exp_sQTL_WBC_EUR <- exp_sQTL_WBC_EUR %>% filter(!(chr.exposure == "chr6" & pos.exposure > 28510120 & pos.exposure < 33480577))
 
 # saveRDS(exp_sQTL_WBC_EUR, file="exposure_sQTL_WBC_EUR.rds")
+
+exp_sQTL_WBC_EUR <- readRDS("exposure_sQTL_WBC_EUR.rds")
+tmp <- readRDS("Whole_Blood_cluster_intron_gene_map.rds")
+  
+tmp <- tmp %>% mutate(exposure = paste0(pos,":",gene),
+                      exposure1 = paste0(pos,":",cluster,":",gene)) %>% dplyr::select(exposure, exposure1)
+exp_sQTL_WBC_EUR <- exp_sQTL_WBC_EUR %>% inner_join(tmp, by="exposure")
+exp_sQTL_WBC_EUR <- exp_sQTL_WBC_EUR %>% mutate(exposure = exposure1)
+
+saveRDS(exp_sQTL_WBC_EUR, file="exp_sQTL_WBC_EUR.rds")
 

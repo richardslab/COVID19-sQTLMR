@@ -3,18 +3,30 @@ library(tidyverse)
 library(data.table)
 library(openxlsx)
 
-ALL_Lung_sQTL_EUR <- readRDS("ALL_Lung_sQTL_EUR_coloc.rds")
-ALL_WBC_sQTL_EUR <- readRDS("ALL_WBC_sQTL_EUR_coloc.rds")
+ALL_Lung_sQTL_EUR <- readRDS("EUR_Lung_sQTL_EUR_coloc.rds")
+ALL_WBC_sQTL_EUR <- readRDS("EUR_WBC_sQTL_EUR_coloc.rds")
 
-tmp_lung <- ALL_Lung_sQTL_EUR %>% filter(p < 0.05 & PP.H4.abf > 0.8)
-tmp_wbc <- ALL_WBC_sQTL_EUR %>% filter(p < 0.05 & PP.H4.abf > 0.8)
+tmp_lung <- ALL_Lung_sQTL_EUR %>% filter(p < 0.05/9292 & PP.H4.abf > 0.8)
+tmp_wbc <- ALL_WBC_sQTL_EUR %>% filter(p < 0.05/9292 & PP.H4.abf > 0.8)
 
 tmp <- bind_rows(tmp_lung, tmp_wbc)
 
 A2_Lung_eQTL_ALL <- readRDS("A2_Lung_eQTL_ALL.rds") %>% mutate(gene = str_split(exposure, pattern="\\.", simplify = T)[,1])
+A2_Lung_eQTL_ALL <- A2_Lung_eQTL_ALL %>% group_by(exposure) %>% 
+  mutate(SNPlist = paste0(SNP, collapse=",")) %>%
+  mutate(SNPlist = gsub("All - Inverse variance weighted,","", SNPlist),
+         SNPlist = gsub("All - MR Egger,","", SNPlist)) %>% ungroup() 
+A2_Lung_eQTL_ALL <- A2_Lung_eQTL_ALL %>% mutate(Method = ifelse(grepl("chr", SNP), "Wald ratio", "Inverse variance weighted"))
+
 A2_Lung_eQTL_ALL <- A2_Lung_eQTL_ALL %>% filter(gene %in% tmp$ensembleID) %>% drop_na(p)
-A2_Lung_eQTL_ALL <- A2_Lung_eQTL_ALL %>% dplyr::select(gene, SNP, b, se, p)
+
 A2_Lung_eQTL_EUR <- readRDS("A2_Lung_eQTL_EUR.rds") %>% mutate(gene = str_split(exposure, pattern="\\.", simplify = T)[,1])
+A2_Lung_eQTL_EUR <- A2_Lung_eQTL_EUR %>% group_by(exposure) %>% 
+  mutate(SNPlist = paste0(SNP, collapse=",")) %>%
+  mutate(SNPlist = gsub("All - Inverse variance weighted,","", SNPlist),
+         SNPlist = gsub("All - MR Egger,","", SNPlist)) %>% ungroup() 
+A2_Lung_eQTL_EUR <- A2_Lung_eQTL_EUR %>% mutate(Method = ifelse(grepl("chr", SNP), "Wald ratio", "Inverse variance weighted"))
+
 A2_Lung_eQTL_EUR <- A2_Lung_eQTL_EUR %>% filter(gene %in% tmp$ensembleID) %>% drop_na(p)
 A2_Lung_eQTL_EUR <- A2_Lung_eQTL_EUR %>% dplyr::select(gene, SNP, b, se, p)
 A2_Lung_eQTL_coloc <- fread("GTEx/eQTL/A2_eQTL_GTEx_Lung_coloc.tsv.gz") %>% mutate(gene = str_split(phenotype_id, pattern="\\.", simplify = T)[,1])
@@ -183,7 +195,7 @@ WBC <- WBC %>% mutate(OR.ALL = exp(b.x),
                       PP.H2.abf.eQTLgen = PP.H2.abf.y,
                       PP.H3.abf.eQTLgen = PP.H3.abf.y,
                       PP.H4.abf.eQTLgen = PP.H4.abf.y
-                      )
+)
 
 WBC <- WBC %>% dplyr::select(gene, outcome, SNP, OR.ALL, LL.ALL, UL.ALL, p.ALL, OR.EUR, LL.EUR, UL.EUR,
                              p.EUR, NSNP.GTEx, PP.H0.abf.GTEx, PP.H1.abf.GTEx, PP.H2.abf.GTEx, PP.H3.abf.GTEx, PP.H4.abf.GTEx,
