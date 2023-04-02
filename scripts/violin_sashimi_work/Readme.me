@@ -2,7 +2,7 @@ To produce violin and sashimi plots, the following was done:
 
 1. First, VCF files for GATK called exome sequencing for all individuals in GTEx was processed to produce individual VCF files for each sQTL using "Isolate_Variants.bash"
 2. Second, code was run sequentially in the "Main.R" file, up to producing the violin plots for each curr.index from 1 to 6. These files are saved in the local directory.
-3. Third, the "runSamtoolsFunctions" function in "Functions.R" was run to produce sorted bam files for the individualized RNA sequencing data from dbGap.
+3. Third, the "runSamtoolsFunctions" function in "Functions.R" was run to produce a shell file to sort bam files for the individualized RNA sequencing data from dbGap.
 4. Fourth, input tables were produced for ggsashimi using the "makeGGSashimi.BamList" function, following the next code section in "Main.R".
 5. Fifth, "example_run_gtex.sh" was used to define input variables for ggsashimi (..bam_input=...) for the selected sQTL.
 6. Sixth, the modified version of "ggsashimi.py" was run from ggsashimi/examples, uncommenting the lines at roughly lines 923 and 1033 for the appropriate sQTL.
