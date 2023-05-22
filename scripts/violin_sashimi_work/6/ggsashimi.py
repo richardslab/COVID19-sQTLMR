@@ -922,10 +922,10 @@ if __name__ == "__main__":
                                 
                                 #if ((j[1] != 155162102) | (j[2] != 155162264)) next #chr1 var1 muc1
                                 #if ((j[1] != 156203520) | (j[2] != 156203824)) next #chr1 var2 pmf1
-                                #if ((j[1] != 106819159) | (j[2] != 106838048)) next #chr4 NPNT
+                                #if ((j[1] != 106819159) | (j[2] != 106830133)) next #chr4 NPNT
                                 #if ((j[1] != 113355506) | (j[2] != 113356414)) next #chr12 oas1
-                                #if ((j[1] != 113530256) | (j[2] != 113532598)) next #chr13 atp11a
-                                if ((j[1] != 4714350)) next #| (j[2] != 4715946)) next #chr19 dpp9
+                                #if ((j[1] != 113530256) | (j[2] != 113534401)) next #chr13 atp11a
+                                if ((j[1] != 4714350) | (j[2] != 4716229)) next #chr19 dpp9
 
                                 print(paste(j[1],j[2],junctions[i,6]))
                                 if ("%(args.aggr)s" != "") {
@@ -1034,7 +1034,7 @@ if __name__ == "__main__":
                 #new.grob.list = density_grobs[c(2,3,1,4,5)] #for indices 2
                 #new.grob.list = density_grobs[c(3,2,1,4,5)] #for indices 3,4
                 new.grob.list = density_grobs[c(2,1,3,4,5)] #for indices 5, 6
-                new.grob.list = density_grobs[c(3,1,2,4,5)] #for indices 5, 6
+                ###new.grob.list = density_grobs[c(3,1,2,4,5)] #for indices 5, 6
                 print(names(new.grob.list))
                 argrobs = arrangeGrob(
                         grobs=new.grob.list,
