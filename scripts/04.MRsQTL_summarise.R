@@ -109,10 +109,13 @@ length(unique(C2_WBC_sQTL$exposure))#3524
 5546+5570+5686+3453+3451+3524#27230
 
 
-genelist <- unique(c(A2_WBC_sQTL$exposure, B2_WBC_sQTL$exposure, C2_WBC_sQTL$exposure))
-length(genelist)#3568
+genelist <- unique(c(A2_Lung_sQTL$exposure, B2_Lung_sQTL$exposure, C2_Lung_sQTL$exposure, A2_WBC_sQTL$exposure, B2_WBC_sQTL$exposure, C2_WBC_sQTL$exposure))
+length(genelist)#9292
 
-SNPlist <- unique(c(A2_WBC_sQTL$SNP, B2_WBC_sQTL$SNP, C2_WBC_sQTL$SNP))
+SNPlist <- unique(c(A2_Lung_sQTL$SNP, B2_Lung_sQTL$SNP, C2_Lung_sQTL$SNP, A2_WBC_sQTL$SNP, B2_WBC_sQTL$SNP, C2_WBC_sQTL$SNP))
+length(SNPlist[grepl("chr", SNPlist)])#3658
+
+SNPlist <- unique(c(A2_Lung_sQTL$SNP, B2_Lung_sQTL$SNP, C2_Lung_sQTL$SNP, A2_WBC_sQTL$SNP, B2_WBC_sQTL$SNP, C2_WBC_sQTL$SNP))
 length(SNPlist[grepl("chr", SNPlist)])#3658
 
 
@@ -194,7 +197,7 @@ All_WBC_sQTL %>% filter(p < 0.05/27230)  %>% dplyr::select(ensembleID) %>% uniqu
 
 length(unique(All_WBC_sQTL$exposure))
 length(unique(All_WBC_sQTL$SNP)) - 2
-length(unique(All_WBC_sQTL$ensembleID))
+length(unique(c(All_WBC_sQTL$ensembleID, All_Lung_sQTL$ensembleID)))#5097
 
 final <- All_WBC_sQTL %>% dplyr::select(exposure, ensembleID, hgnc_symbol, outcome, Method, SNPlist, OR, LL, UL, p, p.adj)
 final %>% openxlsx::write.xlsx("/home/richards/tomoko.nakanishi/my_project/repo/COVID19-sQTLMR/results/SuppleTable2.WBC.MR.xlsx")
