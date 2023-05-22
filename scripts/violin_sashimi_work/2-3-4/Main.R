@@ -69,7 +69,7 @@ nea = neas[[curr.index]] ; ea = eas[[curr.index]]
 # for testing nonrandom samples for sashimi plots - exploring DPP9
 tmp = plot.df %>% arrange(GT,QuantExcised)
 tmp = tmp[c(131:159,sample(160:261,29),c(262:290)),]
-tmp = tmp[c(1:29,sample(160:261,29),c(262:290)),]
+# tmp = tmp[c(1:29,sample(160:261,29),c(262:290)),]
   
 plt = ggplot(plot.df,aes(x=GT,y=QuantExcised,fill=GT)) + geom_violin() +
   scale_fill_manual(values=color.set.by.loc[[curr.index]]) +
@@ -98,8 +98,8 @@ p.adjust(c(p1,p2),'BH')
 ##############################################
 #Next make Sashimi plots
 #First, need to get 20 randomly-selected samples for each genotype
-makeGGSashimi.BamList(plot.df,names(gts)[[curr.index]]) #Bam files GRCh37
+makeGGSashimi.BamList(plot.df,names(gts)[[curr.index]],F,all.samples=F) #Bam files GRCh37
 
 # for working with ggsashimi:
-# go to line 923 of ggsashimi.py to select the appropriate intron to highlight
-# go to line 1027 to put in the right order
+# go to line ~923 of ggsashimi.py to select the appropriate intron to highlight
+# go to line ~1027 to put in the right order

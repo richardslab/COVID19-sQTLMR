@@ -45,7 +45,7 @@ runSamtoolsFunctions = function() {
   
   write.table(commands,'samtools_sort_index_new.sh',row.names=F,col.names=F,quote=F)
 }
-makeGGSashimi.BamList = function(df,name,pick.extremes) {
+makeGGSashimi.BamList = function(df,name,pick.extremes,all.samples) {
   #get dictionary
   dictionary = vroom('/project/richards/restricted/dbGap/prj_32756/Documents/linking_file_GTEx.txt') %>%
     dplyr::filter(submitted_subject_id %in% df$Sample,body_site == 'Lung')
@@ -72,7 +72,10 @@ makeGGSashimi.BamList = function(df,name,pick.extremes) {
   indices.to.keep = numeric()
   for (g in unique(out.df$Label)) { #go by gt
     matching.indices = which(out.df$Label == g)
-    indices.to.keep %<>% append(sample(matching.indices,min.size))
+    if (!all.samples) 
+      indices.to.keep %<>% append(sample(matching.indices,min.size))
+    else
+      indices.to.keep %<>% append(matching.indices)
   }
   
   write.df = out.df[indices.to.keep,]
