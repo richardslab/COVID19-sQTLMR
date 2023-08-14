@@ -20,3 +20,7 @@ under `scripts`
 * `14.HPA.scRNAseq.heatmap.R`: scripts to make Fig. 4A and 4B.
 * `15.scRNAseq_covid.R`: scripts to make Fig. 4C.
 * `16.coloc_otherdiseases.R`: scripts to run colocalization for other diseases than COVID-19.
+
+under `scripts/violin_sashimi_work`
+
+Codes to generate Fig 2 (violin plot) and Supplementary Fig 1 (sashimi plot) were stored. For details, please refer to the Readme file within the folder.
