@@ -816,5 +816,5 @@ tmp <- tmp %>% mutate(exposure = paste0(pos,":",gene),
 exp_sQTL_WBC_EUR <- exp_sQTL_WBC_EUR %>% inner_join(tmp, by="exposure")
 exp_sQTL_WBC_EUR <- exp_sQTL_WBC_EUR %>% mutate(exposure = exposure1)
 
-saveRDS(exp_sQTL_WBC_EUR, file="exp_sQTL_WBC_EUR.rds")
+saveRDS(exp_sQTL_WBC_EUR, file="exposure_sQTL_WBC_EUR.rds")
 
