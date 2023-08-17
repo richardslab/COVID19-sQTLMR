@@ -1,8 +1,11 @@
-library(vroom) ; library(EnvStats) ; library(vcfR) ; library(ggplot2)
+library(tidyverse) ; library(vroom) ; library(EnvStats) ; library(vcfR) ; 
 library(glue) ; library(data.table) ; library(magrittr) ; library(stringr)
-library(dplyr)
+library(rtracklayer)
+
 setwd("/scratch/richards/julian.willett/14.GTEx_sQTL_Tomoko_Work")
 source('Functions.R')
+
+# imput vcf file has skip=15
 
 vars = c('chr19:4714337:4717615:clu_25374:ENSG00000142002.16', #GRCh38
          'chr13:112875941:112880546:clu_3196:ENSG00000068650.18',
@@ -25,13 +28,14 @@ quant.excised = vroom('Lung.v8.leafcutter_phenotypes.bed.gz') %>% #GRCh38
 
 refs = c('C','G','G','G','C','A') ; alts = c('T','A','A','A','T','G')
 neas = c('T','A','A','G','C','A') ; eas = c('C','G','G','A','T','G')
-gts = getAllGenotypes(refs,alts) #GRCh37
+gts = getAllGenotypes(refs,alts) #GRCh38 
 color.set.1 = c('#fee8c8','#fdbb84','#e34a33')
 color.set.2 = c('#deebf7','#9ecae1','#3182bd')
 color.set.by.loc = list(color.set.2,color.set.2,color.set.1,color.set.1,color.set.1,
                         color.set.1)
 
 curr.index = 6 #pick index between 1-6 for each sQTL
+# set.seed(1)
 nea = refs[[curr.index]] ; ea = alts[[curr.index]]
 curr.excised.all = transpose((quant.excised %>% dplyr::filter(`#Chr`==names(gts)[[curr.index]]))[,3:ncol(quant.excised)],keep.names='Sample') %>%
   dplyr::rename(QE=V1)
@@ -67,8 +71,8 @@ gt.counts = as.numeric(table(plot.df$GT))
 nea = neas[[curr.index]] ; ea = eas[[curr.index]]
 
 # for testing nonrandom samples for sashimi plots - exploring DPP9
-tmp = plot.df %>% arrange(GT,QuantExcised)
-tmp = tmp[c(131:159,sample(160:261,29),c(262:290)),]
+# tmp = plot.df %>% arrange(GT,QuantExcised)
+# tmp = tmp[c(131:159,sample(160:261,29),c(262:290)),]
 # tmp = tmp[c(1:29,sample(160:261,29),c(262:290)),]
   
 plt = ggplot(plot.df,aes(x=GT,y=QuantExcised,fill=GT)) + geom_violin() +
@@ -98,8 +102,13 @@ p.adjust(c(p1,p2),'BH')
 ##############################################
 #Next make Sashimi plots
 #First, need to get 20 randomly-selected samples for each genotype
-makeGGSashimi.BamList(plot.df,names(gts)[[curr.index]],F,all.samples=F) #Bam files GRCh37
+makeGGSashimi.BamList(plot.df,names(gts)[[curr.index]],F,all.samples=T) #Bam files GRCh37
+# makeTrackplot.BamList(plot.df,names(gts)[[curr.index]])
 
 # for working with ggsashimi:
 # go to line ~923 of ggsashimi.py to select the appropriate intron to highlight
 # go to line ~1027 to put in the right order
+
+################################################
+# Get CPM by genotype
+samtools.reads = getAllSamtoolsReads()
