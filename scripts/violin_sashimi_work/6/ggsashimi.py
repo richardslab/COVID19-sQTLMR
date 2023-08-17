@@ -920,12 +920,21 @@ if __name__ == "__main__":
                                 j = as.numeric(junctions[i,1:5])
                                 
                                 
-                                #if ((j[1] != 155162102) | (j[2] != 155162264)) next #chr1 var1 muc1
-                                #if ((j[1] != 156203520) | (j[2] != 156203824)) next #chr1 var2 pmf1
-                                #if ((j[1] != 106819159) | (j[2] != 106830133)) next #chr4 NPNT
-                                #if ((j[1] != 113355506) | (j[2] != 113356414)) next #chr12 oas1
-                                #if ((j[1] != 113530256) | (j[2] != 113534401)) next #chr13 atp11a
-                                if ((j[1] != 4714350) | (j[2] != 4716229)) next #chr19 dpp9
+                                # Coords for all samples grch38
+                                #if ((j[1] != 155192310) | (j[2] != 155192523)) next #chr1 var1 muc1
+                                #if ((j[1] != 156233729) | (j[2] != 156235347)) next #chr1 var2 pmf1
+                                #if ((j[1] != 105898002)| (j[2] != 105913132)) next #chr4 NPNT
+                                #if ((j[1] != 112917701) | (j[2] != 112918517)) next #chr12 oas1
+                                #if ((j[1] != 112875942) | (j[2] != 112879826)) next #chr13 atp11a
+                                if ((j[1] != 4714281)) next # | (j[2] != 4716769)) next #chr19 dpp9
+
+                                # Coords for 20 samples per GT grch38
+                                #if ((j[1] != 155192292) | (j[2] != 155192663)) next #chr1 var1 muc1
+                                #if ((j[1] != 156233729) | (j[2] != 156235499)) next #chr1 var2 pmf1
+                                #if ((j[1] != 105898002) | (j[2] != 105916737)) next #chr4 NPNT
+                                #if ((j[1] != 112917701) | (j[2] != 112918558)) next #chr12 oas1
+                                #if ((j[1] != 112875942) | (j[2] != 112880721)) next #chr13 atp11a
+                                #if ((j[1] != 4714266) | (j[2] != 4717944)) next #chr19 dpp9
 
                                 print(paste(j[1],j[2],junctions[i,6]))
                                 if ("%(args.aggr)s" != "") {
@@ -984,7 +993,7 @@ if __name__ == "__main__":
 
 
                         }
-
+                        
                         gpGrob = ggplotGrob(gp);
                         gpGrob$layout$clip[gpGrob$layout$name=="panel"] <- "off"
                         if (bam_index == 1) {
@@ -995,7 +1004,7 @@ if __name__ == "__main__":
                                 xaxisGrob$heights[8+vs] = gpGrob$heights[1]              # fix problems ggplot2 vs
                                 x.axis.height = gpGrob$heights[7+vs] + gpGrob$heights[1] # fix problems ggplot2 vs
                         }
-
+                        
 
                         # Remove x axis from all density plots
                         kept_names = gpGrob$layout$name[gpGrob$layout$name != "axis-b"]
@@ -1006,17 +1015,17 @@ if __name__ == "__main__":
                         maxYtextWidth = grid::unit.pmax(maxYtextWidth, gpGrob$widths[3+vs]); # fix problems ggplot2 vs
                         density_grobs[[id]] = gpGrob;
                 }
-
+                
                 # Add x axis grob after density grobs BEFORE annotation grob
                 density_grobs[["xaxis"]] = xaxisGrob
-
-                # Annotation grob
+                
+                # Annotation grob 
                 if (%(args.gtf)s == 1) {
                         gtfGrob = ggplotGrob(gtfp);
                         maxWidth = grid::unit.pmax(maxWidth, gtfGrob$widths[2+vs] + gtfGrob$widths[3+vs]); # fix problems ggplot2 vs
                         density_grobs[['gtf']] = gtfGrob;
                 }
-
+                
                 # Reassign grob widths to align the plots
                 for (id in names(density_grobs)) {
                         density_grobs[[id]]$widths[1] <- density_grobs[[id]]$widths[1] + maxWidth - (density_grobs[[id]]$widths[2+vs] + maxYtextWidth); # fix problems ggplot2 vs
@@ -1030,11 +1039,10 @@ if __name__ == "__main__":
                         unit(%(ann_height)s*%(args.gtf)s, "in")
                         )
                 # Arrange grobs
-                #new.grob.list = density_grobs[c(3,2,1,4,5)] #for indices 1
-                #new.grob.list = density_grobs[c(2,3,1,4,5)] #for indices 2
-                #new.grob.list = density_grobs[c(3,2,1,4,5)] #for indices 3,4
-                new.grob.list = density_grobs[c(2,1,3,4,5)] #for indices 5, 6
-                ###new.grob.list = density_grobs[c(3,1,2,4,5)] #for indices 5, 6
+                #new.grob.list = density_grobs[c(3,2,1,4,5)] #for indices 1 and 2 and 4
+                new.grob.list = density_grobs[c(3,1,2,4,5)] #for indices 3
+                #new.grob.list = density_grobs[c(1,3,2,4,5)] #for indices 5
+                #new.grob.list = density_grobs[c(3,2,1,4,5)] #for indices 6
                 print(names(new.grob.list))
                 argrobs = arrangeGrob(
                         grobs=new.grob.list,
@@ -1046,7 +1054,7 @@ if __name__ == "__main__":
                 if ("%(out_format)s" == "tiff"){
                         # TIFF images will be lzw-compressed
                         ggsave("%(out)s", plot = argrobs, device = "tiff", width = width, height = height, units = "in", dpi = %(out_resolution)s, compression = "lzw", limitsize = FALSE)
-                } else {
+                } else { # for pdf
                         ggsave("%(out)s", plot = argrobs, device = "%(out_format)s", width = width, height = height, units = "in", dpi = %(out_resolution)s, limitsize = FALSE)
                 }
 
