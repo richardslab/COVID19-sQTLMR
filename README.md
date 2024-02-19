@@ -2,7 +2,7 @@
 
 The codes and results repository for the MR analyses to understand the effect of alternative splicing on COVID-19.
 
-**citation:** [Nakanishi T*†, Willet J*, _et al_. Alternative splicing in lung influences COVID-19 severity and respiratory diseases. _Nat Commun 2023](https://www.nature.com/articles/s41467-023-41912-4)
+**citation:** [Nakanishi T*†, Willet J*, _et al_. Alternative splicing in lung influences COVID-19 severity and respiratory diseases. _Nat Commun_ 2023](https://www.nature.com/articles/s41467-023-41912-4)
 
 under `scripts`
 
